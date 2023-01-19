@@ -28,4 +28,46 @@ let checkJWT = function(req, res, nex){
     }
 }
 
+
+// THIS WOULD BE TO MAKE COMMENTS PUBLIC TO USERS AND PRIVATE TO NONUSERS. 
+
+// const express = require('express');
+// const jwt = require('jsonwebtoken');
+// const router = express.Router();
+
+// router.post('/books/:id/comments', (req, res) => {
+//     // Retrieve the book id from the request parameters
+//     const bookId = req.params.id;
+
+//     // Retrieve the comment data and the JWT from the request
+//     const comment = req.body;
+//     const token = req.headers.authorization;
+
+//     // Verify the JWT
+//     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+//         if (err) {
+//             // If the JWT is invalid, return an error
+//             res.status(401).json({ message: 'Unauthorized' });
+//         } else {
+//             // If the JWT is valid, save the comment
+//             // along with the user_id from the JWT
+//             // ...
+
+//             // Send a success message as a response
+//             res.json({ message: 'Comment added successfully' });
+//         }
+//     });
+// });
+
+// router.get('/books/:id/comments', (req, res) => {
+//     // Retrieve the book id from the request parameters
+//     const bookId = req.params.id;
+
+//     // Retrieve the JWT from the request
+//     const token = req.headers.authorization;
+
+//     // Verify the JWT
+//     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+
+
 module.exports = {checkJWT}

@@ -1,6 +1,6 @@
 let mysql = require("mysql");
 
-let connectiob = mysql.createConnection({
+let connection = mysql.createConnection({
     "user": process.env.DB_USERNAME,
     "password": process.env.DB_PASSWORD,
     "host": process.env.DB_HOST,
@@ -9,9 +9,9 @@ let connectiob = mysql.createConnection({
 
 })
 
-connectiob.query("select now()", function(err, rows){
+connection.query("select now()", function(err, rows){
     if(err){
-        console.error("Failed to test db connetion", err);
+        console.error("Failed to test db connection", err);
     } else {
         console.log("Testing connection passed", rows[0]);
     }

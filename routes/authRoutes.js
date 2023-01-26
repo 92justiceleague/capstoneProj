@@ -1,6 +1,6 @@
 let express = require("express");
 let router = new express.Router();
-let controller = require("../controllers/authController");
+let controller = require("../controllers/bookController");
 
 router.post("/register", controller.register)
 

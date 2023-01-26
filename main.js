@@ -8,7 +8,7 @@ let PORT = process.env.PORT || 8080;
 let app = express();
 app.use(express.json());
 
-app.use(express.static.('./public'))
+app.use(express.static('./public'))
 
 let authRoutes = require("./routes/authRoutes");
 app.use(authRoutes);

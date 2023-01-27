@@ -1,148 +1,62 @@
-let db = require("../db");
-let argon = require("argon2")
-let jwt = require("jsonwebtoken")
+let db = require("../db")
 
+const createBook = function(req, res){
+    let bookName = req.body.bookName
+    let genre = req.body.genre
+    let author = req.body.author
 
+    let sqlCommand = "INSERT INTO bookTable(bookName, genre, author) VALUES (?, ?, ?)"
 
-let JWT_SECRET = process.env.JWT_SECRET
+    let params = [bookName, genre, author]
 
+    db.query(sqlCommand, params, function(error, results) {
 
-
-let register = async function (req, res) {
-    console.log("inside register function")
-
-
-
-    let email = req.body.email;
-    let password = req.body.password;
-    let fullname = req.body.fullname;
-
-
-
-    let pwHash = await argon.hash(password);
-
-
-
-    let sql = "insert into users (email, fullname, password_hash) values (?, ? , ?)";
-    let params = [email, fullname, pwHash];
-
-
-
-    db.query(sql, params, function (err, rows) {
-        if (err) {
-            console.error("failed to register", err);
-            res.sendStatus(500);
-        } else {
-            res.sendStatus(202);
+        if(error){
+            console.log("Could not create book", error)
+            res.sendStatus(500)
+        }else{
+            console.log("Book has been created", results)
+            res.sendStatus(202)
         }
-
+        
     })
+}
 
+const listBooks = function(req, res){
+    let sqlCommand = "SELECT * FROM bookTable"
+
+    db.query(sqlCommand, function(error, results){
+        if(error){
+            console.log("Could not list books", error)
+            res.sendStatus(500)
+        }else{
+            console.log("Here is your list of books", results)
+           res.json(results)
+        }
+    })
 }
 
 
+const createComment = function(req,res){
+    let commentBody = req.body.commentBody
+    let bookId = req.params.id
+    let sqlCommand= "INSERT INTO commentTable(bookId, commentBody) VALUES (?, ?)"
 
-// let login = async function (req, res) {
-//     console.log("inside login function")
+    let params = [bookId, commentBody]
 
-//     let email = req.body.email; 
-//     let password = req.body.password;
-
-//     // let sql = “select id, full_name, password_hash from users where email = ?”;
-
-//     let sql = “select password_hash from users_table where email = ?”;
-//     let params = [email];
-
-
-
-//     db.query(sql, params, async function (err, rows) {
-//         if (err) {
-//             console.error("could not get login info", err);
-//             res.sendStatus(500);
-//             return;
-//         }
-//         if (rows.length == 0) {
-//             res.sendStatus(403);
-//             return;
-//         }
-
-//         if (rows.length > 1) {
-//             res.sendStatus(500);
-//             return;
-//         }
-
-//         let pwHash = rows[0].password_hash;
-
-//         let match = await argon.verify(pwHash, password);
-
-//         if (match) {
-//             let token = {
-//                 "email": email,
-//                 "fullname": rows[0].full_name,
-//                 "userid": rows[0].id
-//             };
-
-//             let signedToken = jwt.sign(token, JWT_SECRET, { expiresIn: "1h" });
-
-//             res.json(signedloken);
-//         } else {
-//             res.sendStatus(403);
-//         }
-
-//     });
-
-// }
-
-
-let login = async function(req, res){
-    
-    let email = req.body.email
-    let password = req.body.password
-
-    let sqlCommand = "Select password_hash from users where email = ?"
-    let params = [email]
-
-    db.query(sqlCommand, params, async function(err, results){
-        if(err){
-            console.log("Could not fetch login info", err)
-            res.sendStatus(500)
-            return
-        }
-
-        if(results.length == 0){
-            res.sendStatus(403)
-            return
-        }
-
-        if(results.length > 1){
-            res.sendStatus(500)
-            return
-        }
-
-        let password_hash = results[0].password_hash
-
-        let goodPass = await argon.verify(password_hash, password)
-
-        if(goodPass){
-            let token = {
-                "email": email,
-                // "fullname": results[0].full_name
-
-            }
-
-            // SAME AS 62
-            // token.email = email
-
-            let signedToken = jwt.sign(token, JWT_SECRET, {expiresIn: "1hr"})
-
-            res.json(signedToken)
-
-        } else {
-            res.sendStatus(403)
-        }
-    })
-
+    db.query(sqlCommand, params, function(error, results){
+        if(error){
+        console.log("Comment not entered", error)
+        res.sendStatus(500)
+    }else{
+        console.log("Comment entered successfully")
+        res.sendStatus(202)
+    }
+})
 }
 
 
-module.exports = { register, login };
+module.exports = {
+    createBook, listBooks, createComment
+}
+
